@@ -17,6 +17,7 @@ export type Scalars = {
   Float: { input: number; output: number; }
   /** Represents non-fractional signed whole numeric values. Since the value may exceed the size of a 32-bit integer, it's encoded as a string. */
   BigInt: { input: any; output: any; }
+  ChargeFilterValues: { input: any; output: any; }
   /** An ISO 8601-encoded date */
   ISO8601Date: { input: any; output: any; }
   /** An ISO 8601-encoded datetime */
@@ -54,6 +55,17 @@ export type AddGocardlessPaymentProviderInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   code: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  successRedirectUrl?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Nowpayments input arguments */
+export type AddNowpaymentsPaymentProviderInput = {
+  apiKey: Scalars['String']['input'];
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  code: Scalars['String']['input'];
+  hmacKey?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   successRedirectUrl?: InputMaybe<Scalars['String']['input']>;
 };
@@ -156,6 +168,11 @@ export type AppliedTax = {
   updatedAt: Scalars['ISO8601DateTime']['output'];
 };
 
+export type AuthUrl = {
+  __typename?: 'AuthUrl';
+  url: Scalars['String']['output'];
+};
+
 /** Base billable metric */
 export type BillableMetric = {
   __typename?: 'BillableMetric';
@@ -194,6 +211,12 @@ export type BillableMetricFilter = {
   values: Array<Scalars['String']['output']>;
 };
 
+/** Billable metric filters input arguments */
+export type BillableMetricFiltersInput = {
+  key: Scalars['String']['input'];
+  values: Array<Scalars['String']['input']>;
+};
+
 export enum BillingTimeEnum {
   Anniversary = 'anniversary',
   Calendar = 'calendar'
@@ -205,6 +228,7 @@ export type Charge = {
   chargeModel: ChargeModelEnum;
   createdAt: Scalars['ISO8601DateTime']['output'];
   deletedAt?: Maybe<Scalars['ISO8601DateTime']['output']>;
+  filters?: Maybe<Array<ChargeFilter>>;
   groupProperties?: Maybe<Array<GroupProperties>>;
   id: Scalars['ID']['output'];
   invoiceDisplayName?: Maybe<Scalars['String']['output']>;
@@ -217,9 +241,36 @@ export type Charge = {
   updatedAt: Scalars['ISO8601DateTime']['output'];
 };
 
+/** Charge filters object */
+export type ChargeFilter = {
+  __typename?: 'ChargeFilter';
+  id: Scalars['ID']['output'];
+  invoiceDisplayName?: Maybe<Scalars['String']['output']>;
+  properties: Properties;
+  values: Scalars['ChargeFilterValues']['output'];
+};
+
+/** Charge filters input arguments */
+export type ChargeFilterInput = {
+  invoiceDisplayName?: InputMaybe<Scalars['String']['input']>;
+  properties: PropertiesInput;
+  values: Scalars['ChargeFilterValues']['input'];
+};
+
+export type ChargeFilterUsage = {
+  __typename?: 'ChargeFilterUsage';
+  amountCents: Scalars['BigInt']['output'];
+  eventsCount: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  invoiceDisplayName?: Maybe<Scalars['String']['output']>;
+  units: Scalars['Float']['output'];
+  values: Scalars['ChargeFilterValues']['output'];
+};
+
 export type ChargeInput = {
   billableMetricId: Scalars['ID']['input'];
   chargeModel: ChargeModelEnum;
+  filters?: InputMaybe<Array<ChargeFilterInput>>;
   groupProperties?: InputMaybe<Array<GroupPropertiesInput>>;
   id?: InputMaybe<Scalars['ID']['input']>;
   invoiceDisplayName?: InputMaybe<Scalars['String']['input']>;
@@ -242,6 +293,7 @@ export enum ChargeModelEnum {
 
 export type ChargeOverridesInput = {
   billableMetricId: Scalars['ID']['input'];
+  filters?: InputMaybe<Array<ChargeFilterInput>>;
   groupProperties?: InputMaybe<Array<GroupPropertiesInput>>;
   id: Scalars['ID']['input'];
   invoiceDisplayName?: InputMaybe<Scalars['String']['input']>;
@@ -256,6 +308,7 @@ export type ChargeUsage = {
   billableMetric: BillableMetric;
   charge: Charge;
   eventsCount: Scalars['Int']['output'];
+  filters?: Maybe<Array<ChargeFilterUsage>>;
   groupedUsage: Array<GroupedChargeUsage>;
   groups?: Maybe<Array<GroupUsage>>;
   units: Scalars['Float']['output'];
@@ -894,7 +947,7 @@ export type CreateBillableMetricInput = {
   code: Scalars['String']['input'];
   description: Scalars['String']['input'];
   fieldName?: InputMaybe<Scalars['String']['input']>;
-  filters?: InputMaybe<Array<Input>>;
+  filters?: InputMaybe<Array<BillableMetricFiltersInput>>;
   group?: InputMaybe<Scalars['JSON']['input']>;
   name: Scalars['String']['input'];
   recurring?: InputMaybe<Scalars['Boolean']['input']>;
@@ -1773,6 +1826,7 @@ export type Fee = InvoiceItem & {
   description?: Maybe<Scalars['String']['output']>;
   eventsCount?: Maybe<Scalars['BigInt']['output']>;
   feeType: FeeTypesEnum;
+  filterDisplayName?: Maybe<Scalars['String']['output']>;
   group?: Maybe<Group>;
   groupName?: Maybe<Scalars['String']['output']>;
   groupedBy: Scalars['JSON']['output'];
@@ -1914,6 +1968,13 @@ export type GocardlessProvider = {
   webhookSecret?: Maybe<Scalars['String']['output']>;
 };
 
+/** Autogenerated input type of GoogleLoginUser */
+export type GoogleLoginUserInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  code: Scalars['String']['input'];
+};
+
 export type GraduatedPercentageRange = {
   __typename?: 'GraduatedPercentageRange';
   flatAmount: Scalars['String']['output'];
@@ -1994,15 +2055,10 @@ export type GroupedChargeUsage = {
   __typename?: 'GroupedChargeUsage';
   amountCents: Scalars['BigInt']['output'];
   eventsCount: Scalars['Int']['output'];
+  filters?: Maybe<Array<ChargeFilterUsage>>;
   groupedBy?: Maybe<Scalars['JSON']['output']>;
   groups?: Maybe<Array<GroupUsage>>;
   units: Scalars['Float']['output'];
-};
-
-/** Billable metric filters input arguments */
-export type Input = {
-  key: Scalars['String']['input'];
-  values: Array<Scalars['String']['input']>;
 };
 
 export type Invite = {
@@ -2255,6 +2311,8 @@ export type Mutation = {
   addAdyenPaymentProvider?: Maybe<AdyenProvider>;
   /** Add or update Gocardless payment provider */
   addGocardlessPaymentProvider?: Maybe<GocardlessProvider>;
+  /** Add Nowpayments payment provider */
+  addNowpaymentsPaymentProvider?: Maybe<NowpaymentsProvider>;
   /** Add Stripe API keys to the organization */
   addStripePaymentProvider?: Maybe<StripeProvider>;
   /** Creates a new add-on */
@@ -2317,6 +2375,8 @@ export type Mutation = {
   finalizeInvoice?: Maybe<Invoice>;
   /** Generate customer portal URL */
   generateCustomerPortalUrl?: Maybe<GenerateCustomerPortalUrlPayload>;
+  /** Opens a session for an existing user with Google Oauth */
+  googleLoginUser?: Maybe<LoginUser>;
   /** Opens a session for an existing user */
   loginUser?: Maybe<LoginUser>;
   /** Refresh a draft invoice */
@@ -2363,6 +2423,8 @@ export type Mutation = {
   updateGocardlessPaymentProvider?: Maybe<GocardlessProvider>;
   /** Update an existing invoice */
   updateInvoice?: Maybe<Invoice>;
+  /** Update Nowpayments payment provider */
+  updateNowpaymentsPaymentProvider?: Maybe<NowpaymentsProvider>;
   /** Updates an Organization */
   updateOrganization?: Maybe<Organization>;
   /** Updates an existing Plan */
@@ -2394,6 +2456,11 @@ export type MutationAddAdyenPaymentProviderArgs = {
 
 export type MutationAddGocardlessPaymentProviderArgs = {
   input: AddGocardlessPaymentProviderInput;
+};
+
+
+export type MutationAddNowpaymentsPaymentProviderArgs = {
+  input: AddNowpaymentsPaymentProviderInput;
 };
 
 
@@ -2552,6 +2619,11 @@ export type MutationGenerateCustomerPortalUrlArgs = {
 };
 
 
+export type MutationGoogleLoginUserArgs = {
+  input: GoogleLoginUserInput;
+};
+
+
 export type MutationLoginUserArgs = {
   input: LoginUserInput;
 };
@@ -2667,6 +2739,11 @@ export type MutationUpdateInvoiceArgs = {
 };
 
 
+export type MutationUpdateNowpaymentsPaymentProviderArgs = {
+  input: UpdateNowpaymentsPaymentProviderInput;
+};
+
+
 export type MutationUpdateOrganizationArgs = {
   input: UpdateOrganizationInput;
 };
@@ -2706,6 +2783,16 @@ export type MutationVoidInvoiceArgs = {
   input: VoidInvoiceInput;
 };
 
+export type NowpaymentsProvider = {
+  __typename?: 'NowpaymentsProvider';
+  apiKey?: Maybe<Scalars['String']['output']>;
+  code: Scalars['String']['output'];
+  hmacKey?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  successRedirectUrl?: Maybe<Scalars['String']['output']>;
+};
+
 /** Organization Type */
 export type Organization = {
   __typename?: 'Organization';
@@ -2730,6 +2817,7 @@ export type Organization = {
   logoUrl?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   netPaymentTerm: Scalars['Int']['output'];
+  nowpaymentsPaymentProviders?: Maybe<Array<NowpaymentsProvider>>;
   state?: Maybe<Scalars['String']['output']>;
   stripePaymentProviders?: Maybe<Array<StripeProvider>>;
   taxIdentificationNumber?: Maybe<Scalars['String']['output']>;
@@ -2768,7 +2856,7 @@ export type OrganizationBillingConfigurationInput = {
   invoiceGracePeriod?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type PaymentProvider = AdyenProvider | GocardlessProvider | StripeProvider;
+export type PaymentProvider = AdyenProvider | GocardlessProvider | NowpaymentsProvider | StripeProvider;
 
 export type PaymentProviderCollection = {
   __typename?: 'PaymentProviderCollection';
@@ -2887,6 +2975,7 @@ export enum ProviderPaymentMethodsEnum {
 export enum ProviderTypeEnum {
   Adyen = 'adyen',
   Gocardless = 'gocardless',
+  Nowpayments = 'nowpayments',
   Stripe = 'stripe'
 }
 
@@ -2930,6 +3019,8 @@ export type Query = {
   customers: CustomerCollection;
   /** Query events of an organization */
   events?: Maybe<EventCollection>;
+  /** Get Google auth url. */
+  googleAuthUrl: AuthUrl;
   /** Query gross revenue of an organization */
   grossRevenues: GrossRevenueCollection;
   /** Query a single Invite */
@@ -3790,7 +3881,7 @@ export type UpdateBillableMetricInput = {
   code: Scalars['String']['input'];
   description: Scalars['String']['input'];
   fieldName?: InputMaybe<Scalars['String']['input']>;
-  filters?: InputMaybe<Array<Input>>;
+  filters?: InputMaybe<Array<BillableMetricFiltersInput>>;
   group?: InputMaybe<Scalars['JSON']['input']>;
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -3894,6 +3985,16 @@ export type UpdateInvoiceInput = {
   id: Scalars['ID']['input'];
   metadata?: InputMaybe<Array<InvoiceMetadataInput>>;
   paymentStatus?: InputMaybe<InvoicePaymentStatusTypeEnum>;
+};
+
+/** Update input arguments */
+export type UpdateNowpaymentsPaymentProviderInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']['input']>;
+  code?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  successRedirectUrl?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Update Organization input arguments */
@@ -4326,7 +4427,7 @@ export type IntegrationsListForCustomerMainInfosQueryVariables = Exact<{
 }>;
 
 
-export type IntegrationsListForCustomerMainInfosQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string, name: string, code: string } | { __typename?: 'GocardlessProvider', id: string, name: string, code: string } | { __typename?: 'StripeProvider', id: string, name: string, code: string }> } | null };
+export type IntegrationsListForCustomerMainInfosQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string, name: string, code: string } | { __typename?: 'GocardlessProvider', id: string, name: string, code: string } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string, name: string, code: string }> } | null };
 
 export type CustomerAppliedTaxRatesForSettingsFragment = { __typename?: 'Customer', id: string, taxes?: Array<{ __typename?: 'Tax', id: string, name: string, code: string, rate: number, autoGenerated: boolean }> | null };
 
@@ -4864,7 +4965,7 @@ export type GetProviderByCodeForAdyenQueryVariables = Exact<{
 }>;
 
 
-export type GetProviderByCodeForAdyenQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'StripeProvider', id: string } | null };
+export type GetProviderByCodeForAdyenQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string } | null };
 
 export type AddAdyenApiKeyMutationVariables = Exact<{
   input: AddAdyenPaymentProviderInput;
@@ -4914,7 +5015,7 @@ export type GetProviderByCodeForGocardlessQueryVariables = Exact<{
 }>;
 
 
-export type GetProviderByCodeForGocardlessQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'StripeProvider', id: string } | null };
+export type GetProviderByCodeForGocardlessQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string } | null };
 
 export type UpdateGocardlessApiKeyMutationVariables = Exact<{
   input: UpdateGocardlessPaymentProviderInput;
@@ -4930,6 +5031,29 @@ export type UpdateOrgaForLagoTaxManagementMutationVariables = Exact<{
 
 export type UpdateOrgaForLagoTaxManagementMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'Organization', id: string } | null };
 
+export type AddNowpaymentsProviderDialogFragment = { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null };
+
+export type GetProviderByCodeForNowpaymentsQueryVariables = Exact<{
+  code?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetProviderByCodeForNowpaymentsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'NowpaymentsProvider', id: string } | { __typename?: 'StripeProvider', id: string } | null };
+
+export type AddNowpaymentsApiKeyMutationVariables = Exact<{
+  input: AddNowpaymentsPaymentProviderInput;
+}>;
+
+
+export type AddNowpaymentsApiKeyMutation = { __typename?: 'Mutation', addNowpaymentsPaymentProvider?: { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null } | null };
+
+export type UpdateNowpaymentsApiKeyMutationVariables = Exact<{
+  input: UpdateNowpaymentsPaymentProviderInput;
+}>;
+
+
+export type UpdateNowpaymentsApiKeyMutation = { __typename?: 'Mutation', updateNowpaymentsPaymentProvider?: { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null } | null };
+
 export type AddStripeProviderDialogFragment = { __typename?: 'StripeProvider', id: string, name: string, code: string, secretKey?: string | null };
 
 export type GetProviderByCodeForStripeQueryVariables = Exact<{
@@ -4937,7 +5061,7 @@ export type GetProviderByCodeForStripeQueryVariables = Exact<{
 }>;
 
 
-export type GetProviderByCodeForStripeQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'StripeProvider', id: string } | null };
+export type GetProviderByCodeForStripeQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string } | null };
 
 export type AddStripeApiKeyMutationVariables = Exact<{
   input: AddStripePaymentProviderInput;
@@ -4970,6 +5094,15 @@ export type DeleteGocardlessMutationVariables = Exact<{
 
 
 export type DeleteGocardlessMutation = { __typename?: 'Mutation', destroyPaymentProvider?: { __typename?: 'DestroyPaymentProviderPayload', id?: string | null } | null };
+
+export type DeleteNowpaymentsIntegrationDialogFragment = { __typename?: 'NowpaymentsProvider', id: string, name: string };
+
+export type DeleteNowpaymentsIntegrationMutationVariables = Exact<{
+  input: DestroyPaymentProviderInput;
+}>;
+
+
+export type DeleteNowpaymentsIntegrationMutation = { __typename?: 'Mutation', destroyPaymentProvider?: { __typename?: 'DestroyPaymentProviderPayload', id?: string | null } | null };
 
 export type DeleteStripeIntegrationDialogFragment = { __typename?: 'StripeProvider', id: string, name: string };
 
@@ -5214,7 +5347,7 @@ export type IntegrationsListForCustomerCreateEditQueryVariables = Exact<{
 }>;
 
 
-export type IntegrationsListForCustomerCreateEditQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename: 'AdyenProvider', id: string, name: string, code: string } | { __typename: 'GocardlessProvider', id: string, name: string, code: string } | { __typename: 'StripeProvider', id: string, name: string, code: string }> } | null };
+export type IntegrationsListForCustomerCreateEditQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename: 'AdyenProvider', id: string, name: string, code: string } | { __typename: 'GocardlessProvider', id: string, name: string, code: string } | { __typename?: 'NowpaymentsProvider' } | { __typename: 'StripeProvider', id: string, name: string, code: string }> } | null };
 
 export type TaxFormFragment = { __typename?: 'Tax', id: string, code: string, description?: string | null, name: string, rate: number, customersCount: number };
 
@@ -5633,7 +5766,7 @@ export type GetAdyenIntegrationsDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetAdyenIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string, apiKey?: string | null, code: string, hmacKey?: string | null, livePrefix?: string | null, merchantAccount: string, successRedirectUrl?: string | null, name: string } | { __typename?: 'GocardlessProvider' } | { __typename?: 'StripeProvider' } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider' } | { __typename?: 'StripeProvider' }> } | null };
+export type GetAdyenIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider', id: string, apiKey?: string | null, code: string, hmacKey?: string | null, livePrefix?: string | null, merchantAccount: string, successRedirectUrl?: string | null, name: string } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider' } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider' }> } | null };
 
 export type AdyenIntegrationsFragment = { __typename?: 'AdyenProvider', id: string, name: string, code: string };
 
@@ -5643,7 +5776,7 @@ export type GetAdyenIntegrationsListQueryVariables = Exact<{
 }>;
 
 
-export type GetAdyenIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, livePrefix?: string | null, merchantAccount: string } | { __typename?: 'GocardlessProvider' } | { __typename?: 'StripeProvider' }> } | null };
+export type GetAdyenIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, livePrefix?: string | null, merchantAccount: string } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider' }> } | null };
 
 export type GocardlessIntegrationDetailsFragment = { __typename?: 'GocardlessProvider', id: string, code: string, name: string, successRedirectUrl?: string | null, webhookSecret?: string | null };
 
@@ -5654,7 +5787,7 @@ export type GetGocardlessIntegrationsDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetGocardlessIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider', id: string, code: string, name: string, successRedirectUrl?: string | null, webhookSecret?: string | null } | { __typename?: 'StripeProvider' } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'StripeProvider' }> } | null };
+export type GetGocardlessIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider', id: string, code: string, name: string, successRedirectUrl?: string | null, webhookSecret?: string | null } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider' } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider' }> } | null };
 
 export type GocardlessIntegrationOauthCallbackFragment = { __typename?: 'GocardlessProvider', id: string, name: string, code: string };
 
@@ -5673,14 +5806,14 @@ export type GetGocardlessIntegrationsListQueryVariables = Exact<{
 }>;
 
 
-export type GetGocardlessIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider', id: string, name: string, code: string } | { __typename?: 'StripeProvider' }> } | null };
+export type GetGocardlessIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider', id: string, name: string, code: string } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider' }> } | null };
 
 export type IntegrationsSettingQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type IntegrationsSettingQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, euTaxManagement: boolean, country?: CountryCode | null } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'StripeProvider', id: string }> } | null };
+export type IntegrationsSettingQuery = { __typename?: 'Query', organization?: { __typename?: 'Organization', id: string, euTaxManagement: boolean, country?: CountryCode | null } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider', id: string } | { __typename?: 'GocardlessProvider', id: string } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string }> } | null };
 
 export type GetOrganizationSettingsQueryVariables = Exact<{
   appliedToOrganization?: InputMaybe<Scalars['Boolean']['input']>;
@@ -5738,7 +5871,7 @@ export type GetStripeIntegrationsDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetStripeIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'StripeProvider', id: string, code: string, name: string, secretKey?: string | null, successRedirectUrl?: string | null } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'StripeProvider', id: string }> } | null };
+export type GetStripeIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string, code: string, name: string, secretKey?: string | null, successRedirectUrl?: string | null } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string }> } | null };
 
 export type StripeIntegrationsFragment = { __typename?: 'StripeProvider', id: string, name: string, code: string };
 
@@ -5748,7 +5881,7 @@ export type GetStripeIntegrationsListQueryVariables = Exact<{
 }>;
 
 
-export type GetStripeIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'StripeProvider', id: string, name: string, code: string, secretKey?: string | null }> } | null };
+export type GetStripeIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider' } | { __typename?: 'StripeProvider', id: string, name: string, code: string, secretKey?: string | null }> } | null };
 
 export type GetTaxesQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -6358,6 +6491,15 @@ export const AddGocardlessProviderDialogFragmentDoc = gql`
   code
 }
     `;
+export const AddNowpaymentsProviderDialogFragmentDoc = gql`
+    fragment AddNowpaymentsProviderDialog on NowpaymentsProvider {
+  id
+  name
+  code
+  apiKey
+  hmacKey
+}
+    `;
 export const AddStripeProviderDialogFragmentDoc = gql`
     fragment AddStripeProviderDialog on StripeProvider {
   id
@@ -6374,6 +6516,12 @@ export const DeleteAdyenIntegrationDialogFragmentDoc = gql`
     `;
 export const DeleteGocardlessIntegrationDialogFragmentDoc = gql`
     fragment DeleteGocardlessIntegrationDialog on GocardlessProvider {
+  id
+  name
+}
+    `;
+export const DeleteNowpaymentsIntegrationDialogFragmentDoc = gql`
+    fragment DeleteNowpaymentsIntegrationDialog on NowpaymentsProvider {
   id
   name
 }
@@ -11005,6 +11153,125 @@ export function useUpdateOrgaForLagoTaxManagementMutation(baseOptions?: Apollo.M
 export type UpdateOrgaForLagoTaxManagementMutationHookResult = ReturnType<typeof useUpdateOrgaForLagoTaxManagementMutation>;
 export type UpdateOrgaForLagoTaxManagementMutationResult = Apollo.MutationResult<UpdateOrgaForLagoTaxManagementMutation>;
 export type UpdateOrgaForLagoTaxManagementMutationOptions = Apollo.BaseMutationOptions<UpdateOrgaForLagoTaxManagementMutation, UpdateOrgaForLagoTaxManagementMutationVariables>;
+export const GetProviderByCodeForNowpaymentsDocument = gql`
+    query getProviderByCodeForNowpayments($code: String) {
+  paymentProvider(code: $code) {
+    ... on AdyenProvider {
+      id
+    }
+    ... on GocardlessProvider {
+      id
+    }
+    ... on StripeProvider {
+      id
+    }
+    ... on NowpaymentsProvider {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProviderByCodeForNowpaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetProviderByCodeForNowpaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProviderByCodeForNowpaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProviderByCodeForNowpaymentsQuery({
+ *   variables: {
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useGetProviderByCodeForNowpaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetProviderByCodeForNowpaymentsQuery, GetProviderByCodeForNowpaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProviderByCodeForNowpaymentsQuery, GetProviderByCodeForNowpaymentsQueryVariables>(GetProviderByCodeForNowpaymentsDocument, options);
+      }
+export function useGetProviderByCodeForNowpaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProviderByCodeForNowpaymentsQuery, GetProviderByCodeForNowpaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProviderByCodeForNowpaymentsQuery, GetProviderByCodeForNowpaymentsQueryVariables>(GetProviderByCodeForNowpaymentsDocument, options);
+        }
+export function useGetProviderByCodeForNowpaymentsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetProviderByCodeForNowpaymentsQuery, GetProviderByCodeForNowpaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetProviderByCodeForNowpaymentsQuery, GetProviderByCodeForNowpaymentsQueryVariables>(GetProviderByCodeForNowpaymentsDocument, options);
+        }
+export type GetProviderByCodeForNowpaymentsQueryHookResult = ReturnType<typeof useGetProviderByCodeForNowpaymentsQuery>;
+export type GetProviderByCodeForNowpaymentsLazyQueryHookResult = ReturnType<typeof useGetProviderByCodeForNowpaymentsLazyQuery>;
+export type GetProviderByCodeForNowpaymentsSuspenseQueryHookResult = ReturnType<typeof useGetProviderByCodeForNowpaymentsSuspenseQuery>;
+export type GetProviderByCodeForNowpaymentsQueryResult = Apollo.QueryResult<GetProviderByCodeForNowpaymentsQuery, GetProviderByCodeForNowpaymentsQueryVariables>;
+export const AddNowpaymentsApiKeyDocument = gql`
+    mutation addNowpaymentsApiKey($input: AddNowpaymentsPaymentProviderInput!) {
+  addNowpaymentsPaymentProvider(input: $input) {
+    id
+    ...AddNowpaymentsProviderDialog
+  }
+}
+    ${AddNowpaymentsProviderDialogFragmentDoc}`;
+export type AddNowpaymentsApiKeyMutationFn = Apollo.MutationFunction<AddNowpaymentsApiKeyMutation, AddNowpaymentsApiKeyMutationVariables>;
+
+/**
+ * __useAddNowpaymentsApiKeyMutation__
+ *
+ * To run a mutation, you first call `useAddNowpaymentsApiKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddNowpaymentsApiKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addNowpaymentsApiKeyMutation, { data, loading, error }] = useAddNowpaymentsApiKeyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddNowpaymentsApiKeyMutation(baseOptions?: Apollo.MutationHookOptions<AddNowpaymentsApiKeyMutation, AddNowpaymentsApiKeyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddNowpaymentsApiKeyMutation, AddNowpaymentsApiKeyMutationVariables>(AddNowpaymentsApiKeyDocument, options);
+      }
+export type AddNowpaymentsApiKeyMutationHookResult = ReturnType<typeof useAddNowpaymentsApiKeyMutation>;
+export type AddNowpaymentsApiKeyMutationResult = Apollo.MutationResult<AddNowpaymentsApiKeyMutation>;
+export type AddNowpaymentsApiKeyMutationOptions = Apollo.BaseMutationOptions<AddNowpaymentsApiKeyMutation, AddNowpaymentsApiKeyMutationVariables>;
+export const UpdateNowpaymentsApiKeyDocument = gql`
+    mutation updateNowpaymentsApiKey($input: UpdateNowpaymentsPaymentProviderInput!) {
+  updateNowpaymentsPaymentProvider(input: $input) {
+    id
+    ...AddNowpaymentsProviderDialog
+  }
+}
+    ${AddNowpaymentsProviderDialogFragmentDoc}`;
+export type UpdateNowpaymentsApiKeyMutationFn = Apollo.MutationFunction<UpdateNowpaymentsApiKeyMutation, UpdateNowpaymentsApiKeyMutationVariables>;
+
+/**
+ * __useUpdateNowpaymentsApiKeyMutation__
+ *
+ * To run a mutation, you first call `useUpdateNowpaymentsApiKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateNowpaymentsApiKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateNowpaymentsApiKeyMutation, { data, loading, error }] = useUpdateNowpaymentsApiKeyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateNowpaymentsApiKeyMutation(baseOptions?: Apollo.MutationHookOptions<UpdateNowpaymentsApiKeyMutation, UpdateNowpaymentsApiKeyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateNowpaymentsApiKeyMutation, UpdateNowpaymentsApiKeyMutationVariables>(UpdateNowpaymentsApiKeyDocument, options);
+      }
+export type UpdateNowpaymentsApiKeyMutationHookResult = ReturnType<typeof useUpdateNowpaymentsApiKeyMutation>;
+export type UpdateNowpaymentsApiKeyMutationResult = Apollo.MutationResult<UpdateNowpaymentsApiKeyMutation>;
+export type UpdateNowpaymentsApiKeyMutationOptions = Apollo.BaseMutationOptions<UpdateNowpaymentsApiKeyMutation, UpdateNowpaymentsApiKeyMutationVariables>;
 export const GetProviderByCodeForStripeDocument = gql`
     query getProviderByCodeForStripe($code: String) {
   paymentProvider(code: $code) {
@@ -11191,6 +11458,39 @@ export function useDeleteGocardlessMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteGocardlessMutationHookResult = ReturnType<typeof useDeleteGocardlessMutation>;
 export type DeleteGocardlessMutationResult = Apollo.MutationResult<DeleteGocardlessMutation>;
 export type DeleteGocardlessMutationOptions = Apollo.BaseMutationOptions<DeleteGocardlessMutation, DeleteGocardlessMutationVariables>;
+export const DeleteNowpaymentsIntegrationDocument = gql`
+    mutation deleteNowpaymentsIntegration($input: DestroyPaymentProviderInput!) {
+  destroyPaymentProvider(input: $input) {
+    id
+  }
+}
+    `;
+export type DeleteNowpaymentsIntegrationMutationFn = Apollo.MutationFunction<DeleteNowpaymentsIntegrationMutation, DeleteNowpaymentsIntegrationMutationVariables>;
+
+/**
+ * __useDeleteNowpaymentsIntegrationMutation__
+ *
+ * To run a mutation, you first call `useDeleteNowpaymentsIntegrationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteNowpaymentsIntegrationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteNowpaymentsIntegrationMutation, { data, loading, error }] = useDeleteNowpaymentsIntegrationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteNowpaymentsIntegrationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteNowpaymentsIntegrationMutation, DeleteNowpaymentsIntegrationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteNowpaymentsIntegrationMutation, DeleteNowpaymentsIntegrationMutationVariables>(DeleteNowpaymentsIntegrationDocument, options);
+      }
+export type DeleteNowpaymentsIntegrationMutationHookResult = ReturnType<typeof useDeleteNowpaymentsIntegrationMutation>;
+export type DeleteNowpaymentsIntegrationMutationResult = Apollo.MutationResult<DeleteNowpaymentsIntegrationMutation>;
+export type DeleteNowpaymentsIntegrationMutationOptions = Apollo.BaseMutationOptions<DeleteNowpaymentsIntegrationMutation, DeleteNowpaymentsIntegrationMutationVariables>;
 export const DeleteStripeDocument = gql`
     mutation deleteStripe($input: DestroyPaymentProviderInput!) {
   destroyPaymentProvider(input: $input) {
