@@ -44,6 +44,9 @@ gql`
       ... on AdyenProvider {
         id
       }
+      ... on NowpaymentsProvider {
+        id
+      }
     }
   }
 

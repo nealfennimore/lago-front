@@ -63,6 +63,7 @@ const paymentProviderCodeEmptyTextLookup = {
   [ProviderTypeEnum.Stripe]: 'text_65940198687ce7b05cd62b64',
   [ProviderTypeEnum.Gocardless]: 'text_65940198687ce7b05cd62b65',
   [ProviderTypeEnum.Adyen]: 'text_65940198687ce7b05cd62b63',
+  [ProviderTypeEnum.Nowpayments]: 'text_65940198687ce7b05cd62b63',
 }
 
 export interface AddCustomerDrawerRef {

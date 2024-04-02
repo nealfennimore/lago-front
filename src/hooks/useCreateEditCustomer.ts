@@ -95,6 +95,12 @@ gql`
           name
           code
         }
+        ... on NowpaymentsProvider {
+          __typename
+          id
+          name
+          code
+        }
       }
     }
   }

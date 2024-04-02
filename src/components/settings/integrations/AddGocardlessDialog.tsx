@@ -42,6 +42,9 @@ gql`
       ... on StripeProvider {
         id
       }
+      ... on NowpaymentsProvider {
+        id
+      }
     }
   }
 

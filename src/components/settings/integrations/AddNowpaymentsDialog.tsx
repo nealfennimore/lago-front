@@ -10,7 +10,7 @@ import { object, string } from 'yup'
 import { Button, Dialog, DialogRef } from '~/components/designSystem'
 import { TextInputField } from '~/components/form'
 import { addToast } from '~/core/apolloClient'
-import { ADYEN_INTEGRATION_DETAILS_ROUTE } from '~/core/router'
+import { NOWPAYMENTS_INTEGRATION_DETAILS_ROUTE } from '~/core/router'
 import {
   AddNowpaymentsPaymentProviderInput,
   AddNowpaymentsProviderDialogFragment,
@@ -56,7 +56,7 @@ gql`
       id
 
       ...AddNowpaymentsProviderDialog
-      #...NowpaymentsIntegrationDetails
+      ...NowpaymentsIntegrationDetails
     }
   }
 
@@ -65,7 +65,7 @@ gql`
       id
 
       ...AddNowpaymentsProviderDialog
-      #...NowpaymentsIntegrationDetails
+      ...NowpaymentsIntegrationDetails
     }
   }
 
@@ -88,14 +88,14 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
   const navigate = useNavigate()
   const dialogRef = useRef<DialogRef>(null)
   const [localData, setLocalData] = useState<TAddNowpaymentsDialogProps | undefined>(undefined)
-  const adyenProvider = localData?.provider
-  const isEdition = !!adyenProvider
+  const nowpaymentsProvider = localData?.provider
+  const isEdition = !!nowpaymentsProvider
 
   const [addApiKey] = useAddNowpaymentsApiKeyMutation({
     onCompleted({ addNowpaymentsPaymentProvider }) {
       if (addNowpaymentsPaymentProvider?.id) {
         navigate(
-          generatePath(ADYEN_INTEGRATION_DETAILS_ROUTE, {
+          generatePath(NOWPAYMENTS_INTEGRATION_DETAILS_ROUTE, {
             integrationId: addNowpaymentsPaymentProvider.id,
           }),
         )
@@ -123,10 +123,10 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
 
   const formikProps = useFormik<AddNowpaymentsPaymentProviderInput>({
     initialValues: {
-      name: adyenProvider?.name || '',
-      code: adyenProvider?.code || '',
-      apiKey: adyenProvider?.apiKey || '',
-      hmacKey: adyenProvider?.hmacKey || undefined,
+      name: nowpaymentsProvider?.name || '',
+      code: nowpaymentsProvider?.code || '',
+      apiKey: nowpaymentsProvider?.apiKey || '',
+      hmacKey: nowpaymentsProvider?.hmacKey || undefined,
     },
     validationSchema: object().shape({
       name: string(),
@@ -145,7 +145,7 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
         (!!res.data?.paymentProvider?.id && !isEdition) ||
         (isEdition &&
           !!res.data?.paymentProvider?.id &&
-          res.data?.paymentProvider?.id !== adyenProvider?.id)
+          res.data?.paymentProvider?.id !== nowpaymentsProvider?.id)
 
       if (isNotAllowedToMutate) {
         formikBag.setFieldError('code', translate('text_632a2d437e341dcc76817556'))
@@ -157,7 +157,7 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
           variables: {
             input: {
               ...values,
-              id: adyenProvider?.id || '',
+              id: nowpaymentsProvider?.id || '',
             },
           },
         })
@@ -189,7 +189,7 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
       title={translate(
         isEdition ? 'text_658461066530343fe1808cd9' : 'text_658466afe6140b469140e1fa',
         {
-          name: adyenProvider?.name,
+          name: nowpaymentsProvider?.name,
         },
       )}
       description={translate(
@@ -211,7 +211,7 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
               onClick={() => {
                 closeDialog()
                 localData?.deleteModalRef?.current?.openDialog({
-                  provider: adyenProvider,
+                  provider: nowpaymentsProvider,
                   callback: localData.deleteDialogCallback,
                 })
               }}
@@ -261,14 +261,7 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
           placeholder={translate('text_645d071272418a14c1c76a83')}
           formikProps={formikProps}
         />
-        <TextInputField
-          name="merchantAccount"
-          disabled={isEdition}
-          label={translate('text_645d071272418a14c1c76a8f')}
-          placeholder={translate('text_645d071272418a14c1c76a9c')}
-          formikProps={formikProps}
-        />
-        {(!isEdition || !!adyenProvider.hmacKey) && (
+        {(!isEdition || !!nowpaymentsProvider.hmacKey) && (
           <TextInputField
             name="hmacKey"
             disabled={isEdition}

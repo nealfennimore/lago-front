@@ -11,13 +11,15 @@ import { ADYEN_SUCCESS_LINK_SPEC_URL } from '~/core/constants/externalUrls'
 import {
   AdyenForCreateAndEditSuccessRedirectUrlFragment,
   GocardlessForCreateAndEditSuccessRedirectUrlFragment,
+  NowpaymentsForCreateAndEditSuccessRedirectUrlFragment,
   StripeForCreateAndEditSuccessRedirectUrlFragment,
   UpdateAdyenPaymentProviderInput,
   UpdateGocardlessPaymentProviderInput,
   UpdateStripePaymentProviderInput,
   useUpdateAdyenPaymentProviderMutation,
   useUpdateGocardlessPaymentProviderMutation,
-  useUpdateStripePaymentProviderMutation,
+  useUpdateNowpaymentsPaymentProviderMutation,
+  useUpdateStripePaymentProviderMutation
 } from '~/generated/graphql'
 import { useInternationalization } from '~/hooks/core/useInternationalization'
 import { theme } from '~/styles'
@@ -34,6 +36,11 @@ gql`
   }
 
   fragment StripeForCreateAndEditSuccessRedirectUrl on StripeProvider {
+    id
+    successRedirectUrl
+  }
+
+  fragment NowpaymentsForCreateAndEditSuccessRedirectUrl on NowpaymentsProvider {
     id
     successRedirectUrl
   }
@@ -58,6 +65,13 @@ gql`
       successRedirectUrl
     }
   }
+
+  mutation updateNowpaymentsPaymentProvider($input: UpdateNowpaymentsPaymentProviderInput!) {
+    updateNowpaymentsPaymentProvider(input: $input) {
+      id
+      successRedirectUrl
+    }
+  }
 `
 
 const AddEditDeleteSuccessRedirectUrlDialogMode = {
@@ -70,6 +84,7 @@ const AddEditDeleteSuccessRedirectUrlDialogProviderType = {
   Adyen: 'Adyen',
   Stripe: 'Stripe',
   GoCardless: 'GoCardless',
+  Nowpayments: 'Nowpayments',
 } as const
 
 type LocalProviderType = {
@@ -79,6 +94,7 @@ type LocalProviderType = {
     | AdyenForCreateAndEditSuccessRedirectUrlFragment
     | GocardlessForCreateAndEditSuccessRedirectUrlFragment
     | StripeForCreateAndEditSuccessRedirectUrlFragment
+    | NowpaymentsForCreateAndEditSuccessRedirectUrlFragment
     | null
 }
 
@@ -131,6 +147,16 @@ export const AddEditDeleteSuccessRedirectUrlDialog =
         }
       },
     })
+    const [updateNowpaymentsProvider] = useUpdateNowpaymentsPaymentProviderMutation({
+      onCompleted(data) {
+        if (data && data.updateNowpaymentsPaymentProvider) {
+          addToast({
+            message: successToastMessage,
+            severity: 'success',
+          })
+        }
+      },
+    })
 
     const formikProps = useFormik<
       | UpdateAdyenPaymentProviderInput
@@ -151,6 +177,7 @@ export const AddEditDeleteSuccessRedirectUrlDialog =
           [AddEditDeleteSuccessRedirectUrlDialogProviderType.Adyen]: updateAdyenProvider,
           [AddEditDeleteSuccessRedirectUrlDialogProviderType.Stripe]: updateStripeProvider,
           [AddEditDeleteSuccessRedirectUrlDialogProviderType.GoCardless]: updateGocardlessProvider,
+          [AddEditDeleteSuccessRedirectUrlDialogProviderType.Nowpayments]: updateNowpaymentsProvider,
         }
 
         const method = methodLoojup[localData?.type as LocalProviderType['type']]

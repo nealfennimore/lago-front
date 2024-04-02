@@ -80,6 +80,11 @@ gql`
           name
           code
         }
+        ... on NowpaymentsProvider {
+          id
+          name
+          code
+        }
       }
     }
   }
