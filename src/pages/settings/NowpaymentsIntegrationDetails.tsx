@@ -49,6 +49,9 @@ gql`
     hmacKey
     successRedirectUrl
     name
+    cancelRedirectUrl
+    partiallyPaidRedirectUrl
+    ipnCallbackUrl
   }
 
   query getNowpaymentsIntegrationsDetails($id: ID!, $limit: Int, $type: ProviderTypeEnum) {

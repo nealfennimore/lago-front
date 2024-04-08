@@ -32,6 +32,10 @@ gql`
     code
     apiKey
     hmacKey
+    successRedirectUrl
+    cancelRedirectUrl
+    partiallyPaidRedirectUrl
+    ipnCallbackUrl
   }
 
   query getProviderByCodeForNowpayments($code: String) {
@@ -127,12 +131,20 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
       code: nowpaymentsProvider?.code || '',
       apiKey: nowpaymentsProvider?.apiKey || '',
       hmacKey: nowpaymentsProvider?.hmacKey || undefined,
+      ipnCallbackUrl: nowpaymentsProvider?.ipnCallbackUrl || undefined,
+      successRedirectUrl: nowpaymentsProvider?.successRedirectUrl || undefined,
+      cancelRedirectUrl: nowpaymentsProvider?.cancelRedirectUrl || undefined,
+      partiallyPaidRedirectUrl: nowpaymentsProvider?.partiallyPaidRedirectUrl || undefined,
     },
     validationSchema: object().shape({
       name: string(),
       code: string().required(''),
       apiKey: string().required(''),
       hmacKey: string(),
+      ipnCallbackUrl: string(),
+      successRedirectUrl: string(),
+      cancelRedirectUrl: string(),
+      partiallyPaidRedirectUrl: string(),
     }),
     onSubmit: async ({ apiKey, hmacKey, ...values }, formikBag) => {
       const res = await getNowpaymentsProviderByCode({
@@ -270,6 +282,30 @@ export const AddNowpaymentsDialog = forwardRef<AddNowpaymentsDialogRef>((_, ref)
             formikProps={formikProps}
           />
         )}
+        <TextInputField
+          name="ipnCallbackUrl"
+          label={"ipnCallbackUrl"}
+          placeholder={""}
+          formikProps={formikProps}
+        />
+        <TextInputField
+          name="successRedirectUrl"
+          label={"successRedirectUrl"}
+          placeholder={""}
+          formikProps={formikProps}
+        />
+        <TextInputField
+          name="cancelRedirectUrl"
+          label={"cancelRedirectUrl"}
+          placeholder={""}
+          formikProps={formikProps}
+        />
+        <TextInputField
+          name="partiallyPaidRedirectUrl"
+          label={"partiallyPaidRedirectUrl"}
+          placeholder={""}
+          formikProps={formikProps}
+        />
       </Content>
     </Dialog>
   )

@@ -62,11 +62,14 @@ export type AddGocardlessPaymentProviderInput = {
 /** Nowpayments input arguments */
 export type AddNowpaymentsPaymentProviderInput = {
   apiKey: Scalars['String']['input'];
+  cancelRedirectUrl?: InputMaybe<Scalars['String']['input']>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   code: Scalars['String']['input'];
   hmacKey?: InputMaybe<Scalars['String']['input']>;
+  ipnCallbackUrl?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  partiallyPaidRedirectUrl?: InputMaybe<Scalars['String']['input']>;
   successRedirectUrl?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2786,10 +2789,13 @@ export type MutationVoidInvoiceArgs = {
 export type NowpaymentsProvider = {
   __typename?: 'NowpaymentsProvider';
   apiKey?: Maybe<Scalars['String']['output']>;
+  cancelRedirectUrl?: Maybe<Scalars['String']['output']>;
   code: Scalars['String']['output'];
   hmacKey?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
+  ipnCallbackUrl?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  partiallyPaidRedirectUrl?: Maybe<Scalars['String']['output']>;
   successRedirectUrl?: Maybe<Scalars['String']['output']>;
 };
 
@@ -3987,13 +3993,16 @@ export type UpdateInvoiceInput = {
   paymentStatus?: InputMaybe<InvoicePaymentStatusTypeEnum>;
 };
 
-/** Update input arguments */
+/** Nowpayments update input arguments */
 export type UpdateNowpaymentsPaymentProviderInput = {
+  cancelRedirectUrl?: InputMaybe<Scalars['String']['input']>;
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   code?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
+  ipnCallbackUrl?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  partiallyPaidRedirectUrl?: InputMaybe<Scalars['String']['input']>;
   successRedirectUrl?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -5040,7 +5049,7 @@ export type UpdateOrgaForLagoTaxManagementMutationVariables = Exact<{
 
 export type UpdateOrgaForLagoTaxManagementMutation = { __typename?: 'Mutation', updateOrganization?: { __typename?: 'Organization', id: string } | null };
 
-export type AddNowpaymentsProviderDialogFragment = { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null };
+export type AddNowpaymentsProviderDialogFragment = { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, successRedirectUrl?: string | null, cancelRedirectUrl?: string | null, partiallyPaidRedirectUrl?: string | null, ipnCallbackUrl?: string | null };
 
 export type GetProviderByCodeForNowpaymentsQueryVariables = Exact<{
   code?: InputMaybe<Scalars['String']['input']>;
@@ -5054,14 +5063,14 @@ export type AddNowpaymentsApiKeyMutationVariables = Exact<{
 }>;
 
 
-export type AddNowpaymentsApiKeyMutation = { __typename?: 'Mutation', addNowpaymentsPaymentProvider?: { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, successRedirectUrl?: string | null } | null };
+export type AddNowpaymentsApiKeyMutation = { __typename?: 'Mutation', addNowpaymentsPaymentProvider?: { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, successRedirectUrl?: string | null, cancelRedirectUrl?: string | null, partiallyPaidRedirectUrl?: string | null, ipnCallbackUrl?: string | null } | null };
 
 export type UpdateNowpaymentsApiKeyMutationVariables = Exact<{
   input: UpdateNowpaymentsPaymentProviderInput;
 }>;
 
 
-export type UpdateNowpaymentsApiKeyMutation = { __typename?: 'Mutation', updateNowpaymentsPaymentProvider?: { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, successRedirectUrl?: string | null } | null };
+export type UpdateNowpaymentsApiKeyMutation = { __typename?: 'Mutation', updateNowpaymentsPaymentProvider?: { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, successRedirectUrl?: string | null, cancelRedirectUrl?: string | null, partiallyPaidRedirectUrl?: string | null, ipnCallbackUrl?: string | null } | null };
 
 export type AddStripeProviderDialogFragment = { __typename?: 'StripeProvider', id: string, name: string, code: string, secretKey?: string | null };
 
@@ -5864,7 +5873,7 @@ export type GetMembersQueryVariables = Exact<{
 
 export type GetMembersQuery = { __typename?: 'Query', memberships: { __typename?: 'MembershipCollection', metadata: { __typename?: 'CollectionMetadata', currentPage: number, totalPages: number, totalCount: number }, collection: Array<{ __typename?: 'Membership', id: string, user: { __typename?: 'User', id: string, email?: string | null } }> } };
 
-export type NowpaymentsIntegrationDetailsFragment = { __typename?: 'NowpaymentsProvider', id: string, apiKey?: string | null, code: string, hmacKey?: string | null, successRedirectUrl?: string | null, name: string };
+export type NowpaymentsIntegrationDetailsFragment = { __typename?: 'NowpaymentsProvider', id: string, apiKey?: string | null, code: string, hmacKey?: string | null, successRedirectUrl?: string | null, name: string, cancelRedirectUrl?: string | null, partiallyPaidRedirectUrl?: string | null, ipnCallbackUrl?: string | null };
 
 export type GetNowpaymentsIntegrationsDetailsQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -5873,7 +5882,7 @@ export type GetNowpaymentsIntegrationsDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetNowpaymentsIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider', id: string, apiKey?: string | null, code: string, hmacKey?: string | null, successRedirectUrl?: string | null, name: string } | { __typename?: 'StripeProvider' } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider', id: string } | { __typename?: 'StripeProvider' }> } | null };
+export type GetNowpaymentsIntegrationsDetailsQuery = { __typename?: 'Query', paymentProvider?: { __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider', id: string, apiKey?: string | null, code: string, hmacKey?: string | null, successRedirectUrl?: string | null, name: string, cancelRedirectUrl?: string | null, partiallyPaidRedirectUrl?: string | null, ipnCallbackUrl?: string | null } | { __typename?: 'StripeProvider' } | null, paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider', id: string } | { __typename?: 'StripeProvider' }> } | null };
 
 export type NowpaymentsIntegrationsFragment = { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string };
 
@@ -5883,7 +5892,7 @@ export type GetNowpaymentsIntegrationsListQueryVariables = Exact<{
 }>;
 
 
-export type GetNowpaymentsIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null } | { __typename?: 'StripeProvider' }> } | null };
+export type GetNowpaymentsIntegrationsListQuery = { __typename?: 'Query', paymentProviders?: { __typename?: 'PaymentProviderCollection', collection: Array<{ __typename?: 'AdyenProvider' } | { __typename?: 'GocardlessProvider' } | { __typename?: 'NowpaymentsProvider', id: string, name: string, code: string, apiKey?: string | null, hmacKey?: string | null, successRedirectUrl?: string | null, cancelRedirectUrl?: string | null, partiallyPaidRedirectUrl?: string | null, ipnCallbackUrl?: string | null } | { __typename?: 'StripeProvider' }> } | null };
 
 export type OrganizationInformationsFragment = { __typename?: 'Organization', id: string, logoUrl?: string | null, name: string, legalName?: string | null, legalNumber?: string | null, taxIdentificationNumber?: string | null, email?: string | null, addressLine1?: string | null, addressLine2?: string | null, zipcode?: string | null, city?: string | null, state?: string | null, country?: CountryCode | null, timezone?: TimezoneEnum | null };
 
@@ -6534,6 +6543,10 @@ export const AddNowpaymentsProviderDialogFragmentDoc = gql`
   code
   apiKey
   hmacKey
+  successRedirectUrl
+  cancelRedirectUrl
+  partiallyPaidRedirectUrl
+  ipnCallbackUrl
 }
     `;
 export const AddStripeProviderDialogFragmentDoc = gql`
@@ -7942,6 +7955,9 @@ export const NowpaymentsIntegrationDetailsFragmentDoc = gql`
   hmacKey
   successRedirectUrl
   name
+  cancelRedirectUrl
+  partiallyPaidRedirectUrl
+  ipnCallbackUrl
 }
     `;
 export const NowpaymentsIntegrationsFragmentDoc = gql`
