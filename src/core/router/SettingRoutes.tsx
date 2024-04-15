@@ -57,6 +57,15 @@ const GocardlessIntegrationDetails = lazyLoad(
       /* webpackChunkName: 'gocardless-integration-details' */ '~/pages/settings/GocardlessIntegrationDetails'
     ),
 )
+const NowpaymentsIntegrations = lazyLoad(
+  () => import(/* webpackChunkName: 'nowpayments-integrations' */ '~/pages/settings/NowpaymentsIntegrations'),
+)
+const NowpaymentsIntegrationDetails = lazyLoad(
+  () =>
+    import(
+      /* webpackChunkName: 'nowpayments-integration-details' */ '~/pages/settings/NowpaymentsIntegrationDetails'
+    ),
+)
 const TaxManagementIntegration = lazyLoad(
   () =>
     import(
@@ -84,6 +93,8 @@ export const STRIPE_INTEGRATION_DETAILS_ROUTE = `${INTEGRATIONS_ROUTE}/stripe/:i
 export const GOCARDLESS_INTEGRATION_ROUTE = `${INTEGRATIONS_ROUTE}/gocardless`
 export const GOCARDLESS_INTEGRATION_OAUTH_CALLBACK_ROUTE = `${INTEGRATIONS_ROUTE}/gocardless/callback`
 export const GOCARDLESS_INTEGRATION_DETAILS_ROUTE = `${INTEGRATIONS_ROUTE}/gocardless/:integrationId`
+export const NOWPAYMENTS_INTEGRATION_ROUTE = `${INTEGRATIONS_ROUTE}/nowpayments`
+export const NOWPAYMENTS_INTEGRATION_DETAILS_ROUTE = `${INTEGRATIONS_ROUTE}/nowpayments/:integrationId`
 export const TAX_MANAGEMENT_INTEGRATION_ROUTE = `${INTEGRATIONS_ROUTE}/lago-tax-management`
 export const MEMBERS_ROUTE = `${SETTINGS_ROUTE}/members`
 export const EMAILS_SETTINGS_ROUTE = `${SETTINGS_ROUTE}/emails`
@@ -158,6 +169,16 @@ export const settingRoutes: CustomRouteObject[] = [
         path: GOCARDLESS_INTEGRATION_DETAILS_ROUTE,
         private: true,
         element: <GocardlessIntegrationDetails />,
+      },
+      {
+        path:NOWPAYMENTS_INTEGRATION_DETAILS_ROUTE,
+        private: true,
+        element: <NowpaymentsIntegrationDetails />,
+      },
+      {
+        path:NOWPAYMENTS_INTEGRATION_ROUTE,
+        private: true,
+        element: <NowpaymentsIntegrations />,
       },
       {
         path: TAX_MANAGEMENT_INTEGRATION_ROUTE,
